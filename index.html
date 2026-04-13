@@ -6,728 +6,225 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0a0a0a">
-<title>NL Life — Shanto's Tracker</title>
-<link rel="manifest" href="#" />
+<title>Berlin Life — Shanto's Tracker</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap');
-
-  :root {
-    --bg: #0a0a0a;
-    --surface: #141414;
-    --surface2: #1e1e1e;
-    --border: rgba(255,255,255,0.08);
-    --border2: rgba(255,255,255,0.14);
-    --text: #f0ede8;
-    --muted: #888;
-    --accent: #b57bff;
-    --accent2: #d4aaff;
-    --danger: #f06060;
-    --warn: #f0b060;
-    --font-head: 'Urbanist', sans-serif;
-    --font-mono: 'Urbanist', sans-serif;
-    --radius: 12px;
-    --radius-sm: 8px;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-mono);
-    min-height: 100vh;
-    max-width: 480px;
-    margin: 0 auto;
-    padding-bottom: 100px;
-  }
-
-  /* Header */
-  .header {
-    padding: 20px 20px 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .logo {
-    font-family: var(--font-head);
-    font-weight: 700;
-    font-size: 18px;
-    letter-spacing: -0.5px;
-  }
-
-  .logo span { color: var(--accent); }
-
-  .date-chip {
-    font-size: 11px;
-    color: var(--muted);
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    padding: 4px 10px;
-    border-radius: 20px;
-  }
-
-  /* Stats strip */
-  .stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-    padding: 16px 20px;
-  }
-
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 12px;
-  }
-
-  .stat-label {
-    font-size: 9px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 4px;
-  }
-
-  .stat-value {
-    font-family: var(--font-head);
-    font-size: 16px;
-    font-weight: 700;
-  }
-
-  .stat-value.green { color: var(--accent); }
-  .stat-value.blue { color: var(--accent2); }
-  .stat-value.warn { color: var(--warn); }
-
-  /* Budget bar */
-  .budget-bar-wrap {
-    margin: 0 20px 16px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 12px;
-  }
-
-  .budget-bar-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
-
-  .budget-bar {
-    height: 6px;
-    background: var(--surface2);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-
-  .budget-bar-fill {
-    height: 100%;
-    border-radius: 3px;
-    background: var(--accent);
-    transition: width 0.4s ease;
-  }
-
-  .budget-bar-fill.warn { background: var(--warn); }
-  .budget-bar-fill.danger { background: var(--danger); }
-
-  /* AI Input */
-  .ai-input-wrap {
-    margin: 0 20px 16px;
-    position: relative;
-  }
-
-  .ai-label {
-    font-size: 10px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-  }
-
-  .ai-input-row {
-    display: flex;
-    gap: 8px;
-  }
-
-  .ai-input {
-    flex: 1;
-    background: var(--surface);
-    border: 1px solid var(--border2);
-    border-radius: var(--radius-sm);
-    padding: 12px 14px;
-    color: var(--text);
-    font-family: var(--font-mono);
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .ai-input:focus { border-color: var(--accent); }
-  .ai-input::placeholder { color: var(--muted); }
-
-  .ai-btn {
-    background: var(--accent);
-    border: none;
-    border-radius: var(--radius-sm);
-    padding: 0 16px;
-    color: #fff;
-    font-family: var(--font-head);
-    font-weight: 700;
-    font-size: 13px;
-    cursor: pointer;
-    transition: opacity 0.2s;
-    white-space: nowrap;
-  }
-
-  .ai-btn:active { opacity: 0.8; }
-  .ai-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-  /* AI Result */
-  .ai-result {
-    margin: 0 20px 16px;
-    background: var(--surface);
-    border: 1px solid var(--border2);
-    border-left: 3px solid var(--accent);
-    border-radius: var(--radius-sm);
-    padding: 14px;
-    display: none;
-  }
-
-  .ai-result.visible { display: block; }
-
-  .ai-result-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 10px;
-  }
-
-  .ai-item-name {
-    font-family: var(--font-head);
-    font-size: 15px;
-    font-weight: 600;
-  }
-
-  .ai-eur {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--accent);
-    font-family: var(--font-head);
-  }
-
-  .ai-breakdown {
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.8;
-    border-top: 1px solid var(--border);
-    padding-top: 10px;
-    margin-top: 6px;
-  }
-
-  .ai-breakdown .highlight { color: var(--accent2); }
-  .ai-breakdown .warn-text { color: var(--warn); }
-
-  .ai-log-btn {
-    margin-top: 12px;
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border2);
-    border-radius: var(--radius-sm);
-    padding: 10px;
-    color: var(--text);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    cursor: pointer;
-    transition: background 0.2s;
-    text-align: center;
-  }
-
-  .ai-log-btn:active { background: var(--border2); }
-
-  /* Section */
-  .section-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px 10px;
-  }
-
-  .section-title {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--muted);
-  }
-
-  .section-action {
-    font-size: 11px;
-    color: var(--accent2);
-    cursor: pointer;
-  }
-
-  /* Expense list */
-  .expense-list {
-    padding: 0 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .expense-item {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 12px 14px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .exp-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    background: var(--surface2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    flex-shrink: 0;
-  }
-
-  .exp-info { flex: 1; min-width: 0; }
-
-  .exp-name {
-    font-size: 13px;
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .exp-meta {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-
-  .exp-amounts { text-align: right; }
-
-  .exp-bdt {
-    font-size: 13px;
-    font-weight: 500;
-  }
-
-  .exp-eur {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-
-  .exp-saved {
-    font-size: 10px;
-    color: var(--accent);
-    margin-top: 2px;
-  }
-
-  /* Empty state */
-  .empty-state {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--muted);
-    font-size: 13px;
-    line-height: 1.8;
-  }
-
-  .empty-icon { font-size: 32px; margin-bottom: 12px; }
-
-  /* Category tabs */
-  .cat-tabs {
-    display: flex;
-    gap: 8px;
-    padding: 0 20px 16px;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .cat-tabs::-webkit-scrollbar { display: none; }
-
-  .cat-tab {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 6px 14px;
-    font-size: 12px;
-    white-space: nowrap;
-    cursor: pointer;
-    transition: all 0.2s;
-    color: var(--muted);
-  }
-
-  .cat-tab.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-    font-weight: 600;
-  }
-
-  /* Fixed costs section */
-  .fixed-wrap {
-    margin: 0 20px 16px;
-  }
-
-  .fixed-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-  }
-
-  .fixed-row:last-child { border-bottom: none; }
-  .fixed-label { color: var(--muted); }
-  .fixed-val { font-weight: 500; }
-
-  /* Bottom nav */
-  .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: 480px;
-    background: rgba(10,10,10,0.95);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid var(--border);
-    display: flex;
-    padding: 12px 0 24px;
-  }
-
-  .nav-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    cursor: pointer;
-    padding: 4px 0;
-  }
-
-  .nav-icon {
-    width: 22px;
-    height: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .nav-icon svg { width: 20px; height: 20px; stroke: var(--muted); fill: none; stroke-width: 1.5; }
-  .nav-item.active .nav-icon svg { stroke: var(--accent); }
-
-  .nav-label {
-    font-size: 10px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .nav-item.active .nav-label { color: var(--accent); }
-
-  /* Pages */
-  .page { display: none; }
-  .page.active { display: block; }
-
-  /* Loading spinner */
-  .spinner {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    border: 2px solid rgba(0,0,0,0.3);
-    border-top-color: #0a0a0a;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* Monthly summary */
-  .month-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    padding: 0 20px 16px;
-  }
-
-  .month-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 14px;
-  }
-
-  .month-card-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-  .month-card-val { font-family: var(--font-head); font-size: 20px; font-weight: 700; }
-
-  /* Transfer reminder */
-  .transfer-box {
-    margin: 0 20px 16px;
-    background: rgba(181,123,255,0.08);
-    border: 1px solid rgba(181,123,255,0.25);
-    border-radius: var(--radius-sm);
-    padding: 14px;
-  }
-
-  .transfer-label { font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-  .transfer-amount { font-family: var(--font-head); font-size: 24px; font-weight: 700; color: var(--accent); }
-  .transfer-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
-
-  /* Manual entry */
-  .form-wrap {
-    padding: 0 20px;
-  }
-
-  .form-group { margin-bottom: 14px; }
-  .form-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: block; }
-
-  .form-input, .form-select {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border2);
-    border-radius: var(--radius-sm);
-    padding: 12px 14px;
-    color: var(--text);
-    font-family: var(--font-mono);
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s;
-    appearance: none;
-  }
-
-  .form-input:focus, .form-select:focus { border-color: var(--accent); }
-
-  option { background: #1e1e1e; }
-
-  .submit-btn {
-    width: 100%;
-    background: var(--accent);
-    border: none;
-    border-radius: var(--radius-sm);
-    padding: 14px;
-    color: #fff;
-    font-family: var(--font-head);
-    font-weight: 700;
-    font-size: 15px;
-    cursor: pointer;
-    margin-top: 8px;
-  }
-
-  .submit-btn:active { opacity: 0.85; }
-
-  /* Toast */
-  .toast {
-    position: fixed;
-    bottom: 90px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--accent);
-    color: #fff;
-    font-family: var(--font-head);
-    font-weight: 600;
-    font-size: 13px;
-    padding: 10px 20px;
-    border-radius: 20px;
-    opacity: 0;
-    transition: all 0.3s;
-    pointer-events: none;
-    white-space: nowrap;
-    z-index: 100;
-  }
-
-  .toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-
-  .spacer { height: 16px; }
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&display=swap');
+:root {
+  --bg:#0a0a0a; --surface:#141414; --surface2:#1e1e1e;
+  --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.14);
+  --text:#f0ede8; --muted:#888; --accent:#b57bff; --accent2:#d4aaff;
+  --danger:#f06060; --warn:#f0b060;
+  --font:'Urbanist',sans-serif; --radius:12px; --radius-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;max-width:480px;margin:0 auto;padding-bottom:100px;}
+.header{padding:20px 20px 0;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-weight:700;font-size:18px;letter-spacing:-0.5px;}
+.logo span{color:var(--accent);}
+.date-chip{font-size:11px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);padding:4px 10px;border-radius:20px;}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:16px 20px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;}
+.stat-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.stat-value{font-size:16px;font-weight:700;}
+.stat-value.green{color:var(--accent);} .stat-value.warn{color:var(--warn);}
+.budget-bar-wrap{margin:0 20px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;}
+.budget-bar-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:8px;}
+.budget-bar{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;}
+.budget-bar-fill{height:100%;border-radius:3px;background:var(--accent);transition:width 0.4s;}
+.budget-bar-fill.warn{background:var(--warn);} .budget-bar-fill.danger{background:var(--danger);}
+.input-wrap{margin:0 20px 16px;}
+.input-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.input-row{display:flex;gap:8px;}
+.main-input{flex:1;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-family:var(--font);font-size:14px;outline:none;transition:border-color 0.2s;}
+.main-input:focus{border-color:var(--accent);}
+.main-input::placeholder{color:var(--muted);}
+.btn{border:none;border-radius:var(--radius-sm);padding:0 16px;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer;transition:opacity 0.2s;white-space:nowrap;height:46px;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-secondary{background:var(--surface2);border:1px solid var(--border2);color:var(--accent);}
+.btn:active{opacity:0.8;} .btn:disabled{opacity:0.4;cursor:not-allowed;}
+.hint-text{font-size:11px;margin-top:6px;padding-left:2px;min-height:16px;}
+.result-card{margin:0 20px 16px;background:var(--surface);border:1px solid var(--border2);border-left:3px solid var(--accent);border-radius:var(--radius-sm);padding:14px;display:none;}
+.result-card.visible{display:block;}
+.result-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.result-name{font-size:15px;font-weight:600;}
+.result-eur{font-size:18px;font-weight:700;color:var(--accent);}
+.result-breakdown{font-size:12px;color:var(--muted);line-height:1.8;border-top:1px solid var(--border);padding-top:10px;margin-top:6px;}
+.result-breakdown .hi{color:var(--accent2);}
+.confirm-btn{margin-top:12px;width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px;color:var(--text);font-family:var(--font);font-size:12px;cursor:pointer;text-align:center;}
+.confirm-btn:active{background:var(--border2);}
+.section-head{display:flex;justify-content:space-between;align-items:center;padding:0 20px 10px;}
+.section-title{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);}
+.section-action{font-size:11px;color:var(--accent2);cursor:pointer;}
+.exp-list{padding:0 20px;display:flex;flex-direction:column;gap:8px;}
+.exp-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:center;gap:12px;}
+.exp-icon{width:36px;height:36px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.exp-info{flex:1;min-width:0;}
+.exp-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.exp-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+.exp-amounts{text-align:right;}
+.exp-bdt{font-size:13px;font-weight:500;}
+.exp-eur{font-size:11px;color:var(--muted);margin-top:2px;}
+.exp-saved{font-size:10px;color:var(--accent);margin-top:2px;}
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;line-height:1.8;}
+.empty-icon{font-size:32px;margin-bottom:12px;}
+.cat-tabs{display:flex;gap:8px;padding:0 20px 16px;overflow-x:auto;scrollbar-width:none;}
+.cat-tabs::-webkit-scrollbar{display:none;}
+.cat-tab{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;white-space:nowrap;cursor:pointer;color:var(--muted);}
+.cat-tab.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;}
+.fixed-wrap{margin:0 20px 16px;}
+.fixed-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.fixed-row:last-child{border-bottom:none;}
+.fixed-label{color:var(--muted);}
+.month-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 20px 16px;}
+.month-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;}
+.month-card-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.month-card-val{font-size:20px;font-weight:700;}
+.transfer-box{margin:0 20px 16px;background:rgba(181,123,255,0.08);border:1px solid rgba(181,123,255,0.25);border-radius:var(--radius-sm);padding:14px;}
+.transfer-label{font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.transfer-amount{font-size:24px;font-weight:700;color:var(--accent);}
+.transfer-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+.form-wrap{padding:0 20px;}
+.form-group{margin-bottom:14px;}
+.form-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;display:block;}
+.form-input,.form-select{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-family:var(--font);font-size:14px;outline:none;appearance:none;}
+.form-input:focus,.form-select:focus{border-color:var(--accent);}
+option{background:#1e1e1e;}
+.submit-btn{width:100%;background:var(--accent);border:none;border-radius:var(--radius-sm);padding:14px;color:#fff;font-family:var(--font);font-weight:700;font-size:15px;cursor:pointer;margin-top:8px;}
+.submit-btn:active{opacity:0.85;}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(10,10,10,0.95);backdrop-filter:blur(10px);border-top:1px solid var(--border);display:flex;padding:12px 0 24px;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:4px 0;}
+.nav-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center;}
+.nav-icon svg{width:20px;height:20px;stroke:var(--muted);fill:none;stroke-width:1.5;}
+.nav-item.active .nav-icon svg{stroke:var(--accent);}
+.nav-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;}
+.nav-item.active .nav-label{color:var(--accent);}
+.page{display:none;} .page.active{display:block;}
+.spacer{height:16px;}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--accent);color:#fff;font-weight:600;font-size:13px;padding:10px 20px;border-radius:20px;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;z-index:100;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.toggle{width:40px;height:22px;border-radius:11px;background:var(--surface2);border:1px solid var(--border2);position:relative;transition:background 0.2s;}
+.toggle-thumb{width:16px;height:16px;border-radius:50%;background:var(--muted);position:absolute;top:2px;left:2px;transition:all 0.2s;}
 </style>
 </head>
 <body>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- Page: Log (Home) -->
+<!-- LOG PAGE -->
 <div class="page active" id="page-log">
   <div class="header">
-    <div class="logo">NL<span>Life</span></div>
+    <div class="logo">DE<span>Life</span></div>
     <div class="date-chip" id="date-chip"></div>
   </div>
-
-  <div class="stats" id="stats-strip">
-    <div class="stat-card">
-      <div class="stat-label">Spent Today</div>
-      <div class="stat-value warn" id="stat-today">€0.00</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Month Total</div>
-      <div class="stat-value" id="stat-month">€0.00</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">NL Saved</div>
-      <div class="stat-value green" id="stat-saved">€0.00</div>
-    </div>
+  <div class="stats">
+    <div class="stat-card"><div class="stat-label">Spent Today</div><div class="stat-value warn" id="stat-today">€0.00</div></div>
+    <div class="stat-card"><div class="stat-label">Month Total</div><div class="stat-value" id="stat-month">€0.00</div></div>
+    <div class="stat-card"><div class="stat-label">Berlin Saved</div><div class="stat-value green" id="stat-saved">€0.00</div></div>
   </div>
-
   <div class="budget-bar-wrap">
-    <div class="budget-bar-label">
-      <span>Monthly Budget Usage</span>
-      <span id="bar-pct">0%</span>
-    </div>
-    <div class="budget-bar">
-      <div class="budget-bar-fill" id="budget-bar-fill" style="width:0%"></div>
-    </div>
+    <div class="budget-bar-label"><span>Monthly Budget Usage</span><span id="bar-pct">0%</span></div>
+    <div class="budget-bar"><div class="budget-bar-fill" id="budget-bar-fill" style="width:0%"></div></div>
   </div>
-
-  <div class="ai-input-wrap">
-    <div class="ai-label">Quick Log — type anything</div>
-    <div class="ai-input-row">
-      <input class="ai-input" id="ai-input" type="text" placeholder='e.g. "singara 10 BDT" or "lunch 80tk"' />
-      <button class="ai-btn" id="ai-btn" onclick="analyzeExpense()">Log</button>
+  <div class="input-wrap">
+    <div class="input-label">Quick Log — type anything</div>
+    <div class="input-row">
+      <input class="main-input" id="ai-input" type="text" placeholder='"singara 10 BDT" or "lunch 80tk"' oninput="liveHint(this.value)" />
+      <button class="btn btn-secondary" id="calc-btn" onclick="calculateOnly()">Calc</button>
+      <button class="btn btn-primary" id="log-btn" onclick="analyzeAndLog()">Log</button>
     </div>
+    <div class="hint-text" id="live-hint"></div>
   </div>
-
-  <div class="ai-result" id="ai-result">
-    <div class="ai-result-top">
-      <div class="ai-item-name" id="res-name">Singara</div>
-      <div class="ai-eur" id="res-eur">€0.08</div>
+  <div class="result-card" id="result-card">
+    <div class="result-top">
+      <div class="result-name" id="res-name"></div>
+      <div class="result-eur" id="res-eur"></div>
     </div>
-    <div class="ai-breakdown" id="res-breakdown"></div>
-    <button class="ai-log-btn" onclick="confirmLog()">✓ Confirm &amp; Log This Expense</button>
+    <div class="result-breakdown" id="res-breakdown"></div>
+    <button class="confirm-btn" id="confirm-btn" onclick="confirmLog()">✓ Confirm & Log This Expense</button>
   </div>
-
   <div class="section-head">
     <div class="section-title">Today's Expenses</div>
     <div class="section-action" onclick="showPage('page-history')">View All →</div>
   </div>
-
-  <div class="expense-list" id="today-list">
-    <div class="empty-state">
-      <div class="empty-icon">🧾</div>
-      Log your first expense above.<br>Type naturally — AI will handle the rest.
-    </div>
+  <div class="exp-list" id="today-list">
+    <div class="empty-state"><div class="empty-icon">🧾</div>Log your first expense above.<br>Type naturally — Gemini handles the rest.</div>
   </div>
 </div>
 
-<!-- Page: Monthly -->
+<!-- MONTHLY PAGE -->
 <div class="page" id="page-monthly">
-  <div class="header">
-    <div class="logo">NL<span>Life</span></div>
-    <div class="date-chip">Monthly</div>
-  </div>
+  <div class="header"><div class="logo">DE<span>Life</span></div><div class="date-chip">Monthly</div></div>
   <div class="spacer"></div>
-
   <div class="transfer-box">
     <div class="transfer-label">Transfer to Savings</div>
     <div class="transfer-amount" id="transfer-amount">€0.00</div>
-    <div class="transfer-sub">NL price gap — money you "saved" vs Netherlands prices</div>
+    <div class="transfer-sub">Berlin price gap — money you saved vs Berlin prices</div>
   </div>
-
   <div class="month-grid">
-    <div class="month-card">
-      <div class="month-card-label">Variable Spent</div>
-      <div class="month-card-val" id="m-spent">€0.00</div>
-    </div>
-    <div class="month-card">
-      <div class="month-card-label">NL Equivalent</div>
-      <div class="month-card-val" id="m-nl-equiv">€0.00</div>
-    </div>
-    <div class="month-card">
-      <div class="month-card-label">Gap Saved</div>
-      <div class="month-card-val" style="color:var(--accent)" id="m-gap">€0.00</div>
-    </div>
-    <div class="month-card">
-      <div class="month-card-label">Survival Budget</div>
-      <div class="month-card-val" style="color:var(--muted)">€1,475</div>
-    </div>
+    <div class="month-card"><div class="month-card-label">Variable Spent</div><div class="month-card-val" id="m-spent">€0.00</div></div>
+    <div class="month-card"><div class="month-card-label">Berlin Equivalent</div><div class="month-card-val" id="m-nl-equiv">€0.00</div></div>
+    <div class="month-card"><div class="month-card-label">Gap Saved</div><div class="month-card-val" style="color:var(--accent)" id="m-gap">€0.00</div></div>
+    <div class="month-card"><div class="month-card-label">Survival Budget</div><div class="month-card-val" style="color:var(--muted)">€1,100</div></div>
   </div>
-
-  <div class="section-head">
-    <div class="section-title">Fixed Monthly Costs</div>
-  </div>
-
+  <div class="section-head"><div class="section-title">Fixed Monthly Costs</div></div>
   <div class="fixed-wrap">
-    <div class="fixed-row"><span class="fixed-label">Shared Room Rent</span><span class="fixed-val">€550</span></div>
-    <div class="fixed-row"><span class="fixed-label">Office / Workspace</span><span class="fixed-val">€450</span></div>
-    <div class="fixed-row"><span class="fixed-label">Employee Salary</span><span class="fixed-val">€85</span></div>
-    <div class="fixed-row"><span class="fixed-label">Internet + Phone</span><span class="fixed-val">€40</span></div>
-    <div class="fixed-row"><span class="fixed-label">Tools & Subscriptions</span><span class="fixed-val">€30</span></div>
-    <div class="fixed-row" style="border-top:1px solid var(--border2); padding-top:12px; margin-top:4px;">
+    <div class="fixed-row"><span class="fixed-label">Shared Room Rent</span><span>€400</span></div>
+    <div class="fixed-row"><span class="fixed-label">Office / Coworking</span><span>€85</span></div>
+    <div class="fixed-row"><span class="fixed-label">Employee Salary</span><span>€85</span></div>
+    <div class="fixed-row"><span class="fixed-label">Internet + Phone</span><span>€35</span></div>
+    <div class="fixed-row"><span class="fixed-label">Tools & Subscriptions</span><span>€30</span></div>
+    <div class="fixed-row"><span class="fixed-label">Transport (BVG monthly)</span><span>€35</span></div>
+    <div class="fixed-row" style="border-top:1px solid var(--border2);padding-top:12px;margin-top:4px;">
       <span style="font-weight:600;">Variable Budget Left</span>
-      <span class="fixed-val" style="color:var(--accent)" id="variable-budget">€320</span>
+      <span style="color:var(--accent)" id="variable-budget">€430</span>
     </div>
   </div>
-
-  <div class="section-head">
-    <div class="section-title">Category Breakdown</div>
-  </div>
-
-  <div class="expense-list" id="category-breakdown">
-    <div class="empty-state" style="padding:20px">No expenses logged yet.</div>
-  </div>
+  <div class="section-head"><div class="section-title">Category Breakdown</div></div>
+  <div class="exp-list" id="category-breakdown"><div class="empty-state" style="padding:20px">No expenses this month.</div></div>
 </div>
 
-<!-- Page: History -->
+<!-- HISTORY PAGE -->
 <div class="page" id="page-history">
-  <div class="header">
-    <div class="logo">NL<span>Life</span></div>
-    <div class="date-chip">All Expenses</div>
-  </div>
+  <div class="header"><div class="logo">DE<span>Life</span></div><div class="date-chip">All Expenses</div></div>
   <div class="spacer"></div>
-
-  <div class="cat-tabs" id="cat-filter-tabs">
-    <div class="cat-tab active" onclick="filterCat('all', this)">All</div>
-    <div class="cat-tab" onclick="filterCat('food', this)">🍜 Food</div>
-    <div class="cat-tab" onclick="filterCat('transport', this)">🚲 Transport</div>
-    <div class="cat-tab" onclick="filterCat('home', this)">🏠 Home</div>
-    <div class="cat-tab" onclick="filterCat('office', this)">💼 Office</div>
-    <div class="cat-tab" onclick="filterCat('family', this)">👨‍👩‍👧 Family</div>
-    <div class="cat-tab" onclick="filterCat('tools', this)">🛠 Tools</div>
-    <div class="cat-tab" onclick="filterCat('misc', this)">📦 Misc</div>
+  <div class="cat-tabs">
+    <div class="cat-tab active" onclick="filterCat('all',this)">All</div>
+    <div class="cat-tab" onclick="filterCat('food',this)">🍜 Food</div>
+    <div class="cat-tab" onclick="filterCat('transport',this)">🚲 Transport</div>
+    <div class="cat-tab" onclick="filterCat('home',this)">🏠 Home</div>
+    <div class="cat-tab" onclick="filterCat('office',this)">💼 Office</div>
+    <div class="cat-tab" onclick="filterCat('family',this)">👨‍👩‍👧 Family</div>
+    <div class="cat-tab" onclick="filterCat('tools',this)">🛠 Tools</div>
+    <div class="cat-tab" onclick="filterCat('misc',this)">📦 Misc</div>
   </div>
-
-  <div class="expense-list" id="all-list">
-    <div class="empty-state">
-      <div class="empty-icon">📂</div>
-      No expenses logged yet.
-    </div>
-  </div>
+  <div class="exp-list" id="all-list"><div class="empty-state"><div class="empty-icon">📂</div>No expenses yet.</div></div>
 </div>
 
-<!-- Page: Manual Add -->
-<div class="page" id="page-add">
-  <div class="header">
-    <div class="logo">NL<span>Life</span></div>
-    <div class="date-chip">Manual Add</div>
-  </div>
+<!-- MY ITEMS PAGE -->
+<div class="page" id="page-items">
+  <div class="header"><div class="logo">DE<span>Life</span></div><div class="date-chip">My Items</div></div>
   <div class="spacer"></div>
+  <div style="padding:0 20px 12px;">
+    <input class="main-input" id="items-search" type="text" placeholder="Search saved items..." oninput="renderItemsList(this.value)" style="width:100%;" />
+  </div>
+  <div class="section-head">
+    <div class="section-title" id="items-count">My Items (0)</div>
+    <div class="section-action" style="color:var(--danger);" onclick="clearAllCustom()">Clear All</div>
+  </div>
+  <div class="exp-list" id="custom-items-list"></div>
+</div>
 
+<!-- ADD PAGE -->
+<div class="page" id="page-add">
+  <div class="header"><div class="logo">DE<span>Life</span></div><div class="date-chip">Manual Add</div></div>
+  <div class="spacer"></div>
   <div class="form-wrap">
-    <div class="form-group">
-      <label class="form-label">Item Name</label>
-      <input class="form-input" id="m-name" type="text" placeholder="e.g. Lunch, Rickshaw, Medicine" />
-    </div>
-    <div class="form-group">
-      <label class="form-label">Amount (BDT)</label>
-      <input class="form-input" id="m-bdt" type="number" placeholder="e.g. 80" />
-    </div>
-    <div class="form-group">
-      <label class="form-label">NL Equivalent (EUR) — optional</label>
-      <input class="form-input" id="m-nl-price" type="number" step="0.01" placeholder="e.g. 8.50" />
-    </div>
+    <div class="form-group"><label class="form-label">Item Name</label><input class="form-input" id="m-name" type="text" placeholder="e.g. Lunch, Rickshaw, Medicine" /></div>
+    <div class="form-group"><label class="form-label">Amount (BDT)</label><input class="form-input" id="m-bdt" type="number" placeholder="e.g. 80" /></div>
+    <div class="form-group"><label class="form-label">Berlin Price (EUR) — optional</label><input class="form-input" id="m-nl-price" type="number" step="0.01" placeholder="e.g. 8.50" /></div>
     <div class="form-group">
       <label class="form-label">Category</label>
       <select class="form-select" id="m-cat">
@@ -740,148 +237,156 @@
         <option value="misc">📦 Misc</option>
       </select>
     </div>
-    <div class="form-group">
-      <label class="form-label">Notes (optional)</label>
-      <input class="form-input" id="m-notes" type="text" placeholder="Any note..." />
+    <div class="form-group"><label class="form-label">Notes (optional)</label><input class="form-input" id="m-notes" type="text" placeholder="Any note..." /></div>
+    <div class="form-group" style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:14px;">
+      <div class="toggle-row" onclick="toggleSaveItem()">
+        <div>
+          <div style="font-size:13px;font-weight:600;">Save to My Items</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;">Quick Log will recognize this next time</div>
+        </div>
+        <div class="toggle" id="save-toggle"><div class="toggle-thumb" id="save-toggle-thumb"></div></div>
+      </div>
+      <div id="save-item-extra" style="display:none;margin-top:12px;border-top:1px solid var(--border);padding-top:12px;">
+        <label class="form-label">Keyword for Quick Log</label>
+        <input class="form-input" id="m-keyword" type="text" placeholder="e.g. lunch, singara, medicine" />
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;">Type this word in Quick Log to auto-fill</div>
+      </div>
     </div>
     <button class="submit-btn" onclick="manualLog()">Log Expense</button>
   </div>
 </div>
 
-<!-- Bottom Nav -->
+<!-- BOTTOM NAV -->
 <div class="bottom-nav">
-  <div class="nav-item active" onclick="showPage('page-log', this)">
-    <div class="nav-icon">
-      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    </div>
+  <div class="nav-item active" onclick="showPage('page-log',this)">
+    <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
     <div class="nav-label">Log</div>
   </div>
-  <div class="nav-item" onclick="showPage('page-monthly', this)">
-    <div class="nav-icon">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-    </div>
+  <div class="nav-item" onclick="showPage('page-monthly',this)">
+    <div class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
     <div class="nav-label">Monthly</div>
   </div>
-  <div class="nav-item" onclick="showPage('page-history', this)">
-    <div class="nav-icon">
-      <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-    </div>
+  <div class="nav-item" onclick="showPage('page-history',this)">
+    <div class="nav-icon"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
     <div class="nav-label">History</div>
   </div>
-  <div class="nav-item" onclick="showPage('page-add', this)">
-    <div class="nav-icon">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-    </div>
+  <div class="nav-item" onclick="showPage('page-items',this)">
+    <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+    <div class="nav-label">Items</div>
+  </div>
+  <div class="nav-item" onclick="showPage('page-add',this)">
+    <div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
     <div class="nav-label">Add</div>
   </div>
 </div>
 
 <script>
 const EUR_RATE = 120;
-const MONTHLY_BUDGET = 1475;
-const FIXED_COSTS = 1155;
+const MONTHLY_BUDGET = 1100;
+const FIXED_COSTS = 670;
 const VARIABLE_BUDGET = MONTHLY_BUDGET - FIXED_COSTS;
+const GEMINI_KEY = 'AIzaSyBjOR7b55bESXjDuJfpgiNfuxgzQAL4_uA';
+const CAT_ICONS = { food:'🍜', transport:'🚲', home:'🏠', office:'💼', family:'👨‍👩‍👧', tools:'🛠', misc:'📦' };
 
-let expenses = JSON.parse(localStorage.getItem('nl_expenses') || '[]');
+let expenses = JSON.parse(localStorage.getItem('de_expenses') || '[]');
 let pendingExpense = null;
+let saveItemOn = false;
 
-const CAT_ICONS = {
-  food: '🍜', transport: '🚲', home: '🏠', office: '💼',
-  family: '👨‍👩‍👧', tools: '🛠', misc: '📦'
-};
-
-function init() {
-  document.getElementById('date-chip').textContent = new Date().toLocaleDateString('en-NL', { day: 'numeric', month: 'short', year: 'numeric' });
-  refreshAll();
-  document.getElementById('ai-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') analyzeExpense();
+async function callGemini(input) {
+  const prompt = `You are an expense analyzer for Shanto, a Bangladeshi freelancer simulating life in Berlin, Germany.
+Convert this expense and compare with realistic Berlin prices.
+EUR to BDT rate: 1 EUR = 120 BDT.
+Input: "${input}"
+Respond ONLY with valid JSON, no markdown:
+{"name":"item name in English","bdt":<number>,"eur_actual":<bdt/120, 2 decimals>,"eur_berlin_price":<realistic Berlin EUR price>,"eur_gap":<berlin_price minus actual, min 0>,"category":"food|transport|home|office|family|tools|misc","hint":"one line: Berlin price and where to buy cheap (Lidl, Aldi, Rewe, Netto etc)"}
+Use Lidl/Aldi prices for food. If amount not stated, guess a typical Bangladesh price.`;
+  const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:0.1}})
   });
+  const data = await resp.json();
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+  return JSON.parse(text.replace(/```json|```/g,'').trim());
 }
 
-function showPage(id, navEl) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  if (navEl) navEl.classList.add('active');
-  if (id === 'page-monthly') refreshMonthly();
-  if (id === 'page-history') renderAllList('all');
+function setLoading(on) {
+  document.getElementById('log-btn').disabled = on;
+  document.getElementById('calc-btn').disabled = on;
+  document.getElementById('log-btn').innerHTML = on ? '<div class="spinner"></div>' : 'Log';
 }
 
-async function analyzeExpense() {
+async function calculateOnly() {
   const input = document.getElementById('ai-input').value.trim();
   if (!input) return;
-
-  const btn = document.getElementById('ai-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<div class="spinner"></div>';
-
+  setLoading(true);
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: `You are an expense analyzer for Shanto, a Bangladeshi freelancer simulating life in the Netherlands (Rotterdam).
-Convert BDT expenses to EUR (rate: 1 EUR = 120 BDT) and compare with Netherlands prices.
-Respond ONLY with valid JSON, no markdown, no preamble:
-{
-  "name": "item name",
-  "bdt": <number>,
-  "eur_actual": <number, 2 decimals>,
-  "eur_nl_price": <number, what this would cost in NL>,
-  "eur_gap": <number, nl_price minus actual>,
-  "category": "food|transport|home|office|family|tools|misc",
-  "breakdown": "2-3 line plain text explanation. Line 1: BDT→EUR conversion. Line 2: NL equivalent context. Line 3: reality check for Shanto.",
-  "reality_check": "ok|stretch|luxury"
+    const r = await callGemini(input);
+    pendingExpense = {...r, raw:input, date:new Date().toISOString()};
+    showResult(r);
+    document.getElementById('confirm-btn').textContent = '✓ Log This Expense';
+  } catch(e) { showToast('Error — check connection'); }
+  setLoading(false);
 }
-If BDT not stated, guess a reasonable amount. Be accurate with NL prices.`,
-        messages: [{ role: 'user', content: input }]
-      })
-    });
 
-    const data = await resp.json();
-    const text = data.content.find(b => b.type === 'text')?.text || '{}';
-    const clean = text.replace(/```json|```/g, '').trim();
-    const result = JSON.parse(clean);
+async function analyzeAndLog() {
+  const input = document.getElementById('ai-input').value.trim();
+  if (!input) return;
+  setLoading(true);
+  try {
+    const r = await callGemini(input);
+    pendingExpense = {...r, raw:input, date:new Date().toISOString()};
+    showResult(r);
+    document.getElementById('confirm-btn').textContent = '✓ Confirm & Log This Expense';
+  } catch(e) { showToast('Error — check connection'); }
+  setLoading(false);
+}
 
-    pendingExpense = { ...result, raw: input, date: new Date().toISOString() };
-
-    document.getElementById('res-name').textContent = result.name;
-    document.getElementById('res-eur').textContent = '€' + result.eur_actual.toFixed(2);
-
-    const lines = result.breakdown.split('\n').filter(Boolean);
-    let html = '';
-    lines.forEach(line => {
-      if (line.includes('NL') || line.includes('Netherlands') || line.includes('€')) {
-        html += `<div class="highlight">${line}</div>`;
-      } else {
-        html += `<div>${line}</div>`;
-      }
-    });
-    html += `<div style="margin-top:8px">NL price: <span class="highlight">€${result.eur_nl_price.toFixed(2)}</span> · You save: <span class="highlight">€${result.eur_gap.toFixed(2)}</span> · Category: ${CAT_ICONS[result.category]} ${result.category}</div>`;
-
-    document.getElementById('res-breakdown').innerHTML = html;
-    document.getElementById('ai-result').classList.add('visible');
-
-  } catch (err) {
-    showToast('Error — try again');
-    console.error(err);
-  }
-
-  btn.disabled = false;
-  btn.textContent = 'Log';
+function showResult(r) {
+  document.getElementById('res-name').textContent = r.name;
+  document.getElementById('res-eur').textContent = '€' + r.eur_actual.toFixed(2);
+  const bp = r.eur_berlin_price || 0;
+  const gap = r.eur_gap || 0;
+  document.getElementById('res-breakdown').innerHTML =
+    `<div>৳${r.bdt} ÷ 120 = <span class="hi">€${r.eur_actual.toFixed(2)}</span></div>
+     <div class="hi">In Berlin this costs ~€${bp.toFixed(2)}</div>
+     <div>${r.hint||''}</div>
+     <div style="margin-top:8px">You save: <span class="hi">€${gap.toFixed(2)}</span> vs Berlin · ${CAT_ICONS[r.category]||'📦'} ${r.category}</div>`;
+  document.getElementById('result-card').classList.add('visible');
 }
 
 function confirmLog() {
   if (!pendingExpense) return;
   expenses.push(pendingExpense);
   saveExpenses();
-  document.getElementById('ai-result').classList.remove('visible');
+  document.getElementById('result-card').classList.remove('visible');
   document.getElementById('ai-input').value = '';
+  document.getElementById('live-hint').textContent = '';
   pendingExpense = null;
   refreshAll();
   showToast('Logged ✓');
+}
+
+function liveHint(val) {
+  const el = document.getElementById('live-hint');
+  if (!val.trim()) { el.textContent = ''; return; }
+  const raw = val.toLowerCase().replace(/[0-9]/g,'').replace(/(bdt|tk|taka|৳)/g,'').trim();
+  const custom = getCustomItems();
+  let found = null;
+  for (const w of raw.split(/\s+/)) { if (custom[w]) { found = custom[w]; break; } }
+  if (!found) for (const k of Object.keys(custom)) { if (raw.includes(k)) { found = custom[k]; break; } }
+  if (found) {
+    el.innerHTML = `<span style="color:var(--accent)">✓ Found in My Items — ${found.name}</span> <span style="color:var(--muted)">· Berlin ~€${found.nlPrice.toFixed(2)}</span>`;
+  } else {
+    el.innerHTML = `<span style="color:var(--muted)">Gemini will calculate Berlin price automatically</span>`;
+  }
+}
+
+function toggleSaveItem() {
+  saveItemOn = !saveItemOn;
+  document.getElementById('save-toggle').style.background = saveItemOn ? 'var(--accent)' : 'var(--surface2)';
+  document.getElementById('save-toggle-thumb').style.left = saveItemOn ? '20px' : '2px';
+  document.getElementById('save-toggle-thumb').style.background = saveItemOn ? '#fff' : 'var(--muted)';
+  document.getElementById('save-item-extra').style.display = saveItemOn ? 'block' : 'none';
 }
 
 function manualLog() {
@@ -890,96 +395,89 @@ function manualLog() {
   const nlPrice = parseFloat(document.getElementById('m-nl-price').value) || null;
   const cat = document.getElementById('m-cat').value;
   const notes = document.getElementById('m-notes').value.trim();
-
   if (!name || !bdt) { showToast('Name & BDT required'); return; }
-
   const eur_actual = bdt / EUR_RATE;
-  const eur_nl_price = nlPrice || eur_actual * 8;
-  const eur_gap = eur_nl_price - eur_actual;
-
-  expenses.push({
-    name, bdt, eur_actual, eur_nl_price, eur_gap,
-    category: cat, breakdown: notes || '', date: new Date().toISOString(),
-    reality_check: 'ok'
-  });
-
+  const eur_berlin_price = nlPrice || eur_actual * 3;
+  const eur_gap = Math.max(0, eur_berlin_price - eur_actual);
+  if (saveItemOn) {
+    const kw = document.getElementById('m-keyword').value.trim() || name.toLowerCase();
+    saveCustomItem(kw, {name, defaultBDT:bdt, nlPrice:eur_berlin_price, category:cat, hint:`Saved item — Berlin ~€${eur_berlin_price.toFixed(2)}`});
+    showToast(`Saved "${kw}" to My Items ✓`);
+    saveItemOn = false; toggleSaveItem();
+  }
+  expenses.push({name, bdt, eur_actual, eur_gap, eur_berlin_price, category:cat, breakdown:notes, date:new Date().toISOString()});
   saveExpenses();
-  document.getElementById('m-name').value = '';
-  document.getElementById('m-bdt').value = '';
-  document.getElementById('m-nl-price').value = '';
-  document.getElementById('m-notes').value = '';
+  ['m-name','m-bdt','m-nl-price','m-notes','m-keyword'].forEach(id => document.getElementById(id).value = '');
   refreshAll();
   showToast('Logged ✓');
   showPage('page-log', document.querySelector('.nav-item'));
 }
 
-function saveExpenses() {
-  localStorage.setItem('nl_expenses', JSON.stringify(expenses));
+function getCustomItems() { return JSON.parse(localStorage.getItem('de_custom_items') || '{}'); }
+function saveCustomItem(kw, item) {
+  const items = getCustomItems();
+  items[kw.toLowerCase().trim()] = item;
+  localStorage.setItem('de_custom_items', JSON.stringify(items));
+}
+function deleteCustomItem(kw) {
+  const items = getCustomItems(); delete items[kw];
+  localStorage.setItem('de_custom_items', JSON.stringify(items));
+  renderItemsList(document.getElementById('items-search').value);
+  showToast(`Deleted "${kw}"`);
+}
+function clearAllCustom() {
+  if (!Object.keys(getCustomItems()).length) { showToast('No items to clear'); return; }
+  localStorage.removeItem('de_custom_items');
+  renderItemsList(''); showToast('Cleared');
+}
+function renderItemsList(search) {
+  const q = (search||'').toLowerCase();
+  const custom = getCustomItems();
+  const keys = Object.keys(custom).filter(k => !q || k.includes(q) || custom[k].name.toLowerCase().includes(q));
+  document.getElementById('items-count').textContent = `My Items (${keys.length})`;
+  const el = document.getElementById('custom-items-list');
+  if (!keys.length) {
+    el.innerHTML = '<div class="empty-state" style="padding:16px 0">No saved items yet.<br>Add via Add tab with Save to My Items toggled on.</div>';
+    return;
+  }
+  el.innerHTML = keys.map(k => {
+    const i = custom[k];
+    return `<div class="exp-item">
+      <div class="exp-icon">${CAT_ICONS[i.category]||'📦'}</div>
+      <div class="exp-info"><div class="exp-name">${i.name}</div>
+        <div class="exp-meta">keyword: <span style="color:var(--accent)">${k}</span> · ৳${i.defaultBDT} · Berlin €${i.nlPrice.toFixed(2)}</div></div>
+      <div class="exp-amounts"><div style="font-size:11px;color:var(--danger);cursor:pointer;" onclick="deleteCustomItem('${k}')">Delete</div></div>
+    </div>`;
+  }).join('');
 }
 
-function today() {
-  return new Date().toDateString();
-}
-
-function thisMonth() {
-  const now = new Date();
-  return `${now.getFullYear()}-${now.getMonth()}`;
-}
-
-function getMonth(dateStr) {
-  const d = new Date(dateStr);
-  return `${d.getFullYear()}-${d.getMonth()}`;
-}
+function saveExpenses() { localStorage.setItem('de_expenses', JSON.stringify(expenses)); }
+function today() { return new Date().toDateString(); }
+function thisMonth() { const n=new Date(); return `${n.getFullYear()}-${n.getMonth()}`; }
+function getMonth(d) { const n=new Date(d); return `${n.getFullYear()}-${n.getMonth()}`; }
 
 function refreshAll() {
   const todayExp = expenses.filter(e => new Date(e.date).toDateString() === today());
   const monthExp = expenses.filter(e => getMonth(e.date) === thisMonth());
-
-  const todayTotal = todayExp.reduce((s, e) => s + e.eur_actual, 0);
-  const monthTotal = monthExp.reduce((s, e) => s + e.eur_actual, 0);
-  const monthGap = monthExp.reduce((s, e) => s + (e.eur_gap || 0), 0);
-
-  document.getElementById('stat-today').textContent = '€' + todayTotal.toFixed(2);
-  document.getElementById('stat-month').textContent = '€' + monthTotal.toFixed(2);
-  document.getElementById('stat-saved').textContent = '€' + monthGap.toFixed(2);
-
-  const pct = Math.min((monthTotal / VARIABLE_BUDGET) * 100, 100);
+  const todayTotal = todayExp.reduce((s,e) => s+e.eur_actual, 0);
+  const monthTotal = monthExp.reduce((s,e) => s+e.eur_actual, 0);
+  const monthGap = monthExp.reduce((s,e) => s+(e.eur_gap||0), 0);
+  document.getElementById('stat-today').textContent = '€'+todayTotal.toFixed(2);
+  document.getElementById('stat-month').textContent = '€'+monthTotal.toFixed(2);
+  document.getElementById('stat-saved').textContent = '€'+monthGap.toFixed(2);
+  const pct = Math.min((monthTotal/VARIABLE_BUDGET)*100, 100);
   const fill = document.getElementById('budget-bar-fill');
-  fill.style.width = pct.toFixed(0) + '%';
-  fill.className = 'budget-bar-fill' + (pct > 90 ? ' danger' : pct > 70 ? ' warn' : '');
-  document.getElementById('bar-pct').textContent = pct.toFixed(0) + '%';
-
+  fill.style.width = pct.toFixed(0)+'%';
+  fill.className = 'budget-bar-fill'+(pct>90?' danger':pct>70?' warn':'');
+  document.getElementById('bar-pct').textContent = pct.toFixed(0)+'%';
   renderTodayList(todayExp);
 }
 
-function renderTodayList(items) {
-  const el = document.getElementById('today-list');
-  if (!items.length) {
-    el.innerHTML = '<div class="empty-state"><div class="empty-icon">🧾</div>Log your first expense above.<br>Type naturally — AI handles the rest.</div>';
-    return;
-  }
-  el.innerHTML = [...items].reverse().map(expHTML).join('');
-}
-
-function renderAllList(cat) {
-  const el = document.getElementById('all-list');
-  const filtered = cat === 'all' ? expenses : expenses.filter(e => e.category === cat);
-  if (!filtered.length) {
-    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📂</div>No expenses here yet.</div>';
-    return;
-  }
-  el.innerHTML = [...filtered].reverse().map(expHTML).join('');
-}
-
 function expHTML(e) {
-  const d = new Date(e.date);
-  const dateStr = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-  return `<div class="expense-item">
-    <div class="exp-icon">${CAT_ICONS[e.category] || '📦'}</div>
-    <div class="exp-info">
-      <div class="exp-name">${e.name}</div>
-      <div class="exp-meta">${e.category} · ${dateStr}</div>
-    </div>
+  const d = new Date(e.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+  return `<div class="exp-item">
+    <div class="exp-icon">${CAT_ICONS[e.category]||'📦'}</div>
+    <div class="exp-info"><div class="exp-name">${e.name}</div><div class="exp-meta">${e.category} · ${d}</div></div>
     <div class="exp-amounts">
       <div class="exp-bdt">৳${e.bdt}</div>
       <div class="exp-eur">€${e.eur_actual.toFixed(2)}</div>
@@ -988,56 +486,68 @@ function expHTML(e) {
   </div>`;
 }
 
+function renderTodayList(items) {
+  document.getElementById('today-list').innerHTML = items.length
+    ? [...items].reverse().map(expHTML).join('')
+    : '<div class="empty-state"><div class="empty-icon">🧾</div>Log your first expense above.<br>Type naturally — Gemini handles the rest.</div>';
+}
+
+function renderAllList(cat) {
+  const filtered = cat==='all' ? expenses : expenses.filter(e=>e.category===cat);
+  document.getElementById('all-list').innerHTML = filtered.length
+    ? [...filtered].reverse().map(expHTML).join('')
+    : '<div class="empty-state"><div class="empty-icon">📂</div>No expenses here yet.</div>';
+}
+
 function filterCat(cat, el) {
-  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  renderAllList(cat);
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active'); renderAllList(cat);
 }
 
 function refreshMonthly() {
-  const monthExp = expenses.filter(e => getMonth(e.date) === thisMonth());
-  const spent = monthExp.reduce((s, e) => s + e.eur_actual, 0);
-  const nlEquiv = monthExp.reduce((s, e) => s + (e.eur_nl_price || 0), 0);
-  const gap = monthExp.reduce((s, e) => s + (e.eur_gap || 0), 0);
-  const varLeft = Math.max(0, VARIABLE_BUDGET - spent);
+  const monthExp = expenses.filter(e=>getMonth(e.date)===thisMonth());
+  const spent = monthExp.reduce((s,e)=>s+e.eur_actual,0);
+  const equiv = monthExp.reduce((s,e)=>s+(e.eur_berlin_price||0),0);
+  const gap = monthExp.reduce((s,e)=>s+(e.eur_gap||0),0);
+  document.getElementById('m-spent').textContent = '€'+spent.toFixed(2);
+  document.getElementById('m-nl-equiv').textContent = '€'+equiv.toFixed(2);
+  document.getElementById('m-gap').textContent = '€'+gap.toFixed(2);
+  document.getElementById('transfer-amount').textContent = '€'+gap.toFixed(2);
+  document.getElementById('variable-budget').textContent = '€'+Math.max(0,VARIABLE_BUDGET-spent).toFixed(2);
+  const cats={};
+  monthExp.forEach(e=>{cats[e.category]=(cats[e.category]||0)+e.eur_actual;});
+  const sorted = Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('category-breakdown').innerHTML = sorted.length
+    ? sorted.map(([cat,total])=>`<div class="exp-item">
+        <div class="exp-icon">${CAT_ICONS[cat]||'📦'}</div>
+        <div class="exp-info"><div class="exp-name" style="text-transform:capitalize">${cat}</div>
+        <div class="exp-meta">${monthExp.filter(e=>e.category===cat).length} items</div></div>
+        <div class="exp-amounts"><div class="exp-bdt" style="font-size:14px">€${total.toFixed(2)}</div>
+        <div class="exp-eur">${((total/VARIABLE_BUDGET)*100).toFixed(0)}% of variable</div></div>
+      </div>`).join('')
+    : '<div class="empty-state" style="padding:20px">No expenses this month.</div>';
+}
 
-  document.getElementById('m-spent').textContent = '€' + spent.toFixed(2);
-  document.getElementById('m-nl-equiv').textContent = '€' + nlEquiv.toFixed(2);
-  document.getElementById('m-gap').textContent = '€' + gap.toFixed(2);
-  document.getElementById('transfer-amount').textContent = '€' + gap.toFixed(2);
-  document.getElementById('variable-budget').textContent = '€' + varLeft.toFixed(2);
-
-  const cats = {};
-  monthExp.forEach(e => {
-    if (!cats[e.category]) cats[e.category] = 0;
-    cats[e.category] += e.eur_actual;
-  });
-
-  const breakdown = document.getElementById('category-breakdown');
-  const sorted = Object.entries(cats).sort((a,b) => b[1]-a[1]);
-  if (!sorted.length) {
-    breakdown.innerHTML = '<div class="empty-state" style="padding:20px">No expenses this month.</div>';
-    return;
-  }
-  breakdown.innerHTML = sorted.map(([cat, total]) => `
-    <div class="expense-item">
-      <div class="exp-icon">${CAT_ICONS[cat]||'📦'}</div>
-      <div class="exp-info">
-        <div class="exp-name" style="text-transform:capitalize">${cat}</div>
-        <div class="exp-meta">${monthExp.filter(e=>e.category===cat).length} items</div>
-      </div>
-      <div class="exp-amounts">
-        <div class="exp-bdt" style="font-size:14px">€${total.toFixed(2)}</div>
-        <div class="exp-eur">${((total/VARIABLE_BUDGET)*100).toFixed(0)}% of variable</div>
-      </div>
-    </div>`).join('');
+function showPage(id, navEl) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if (navEl) navEl.classList.add('active');
+  if (id==='page-monthly') refreshMonthly();
+  if (id==='page-history') renderAllList('all');
+  if (id==='page-items') renderItemsList('');
 }
 
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+function init() {
+  document.getElementById('date-chip').textContent = new Date().toLocaleDateString('en-DE',{day:'numeric',month:'short',year:'numeric'});
+  refreshAll();
+  document.getElementById('ai-input').addEventListener('keydown', e=>{if(e.key==='Enter') analyzeAndLog();});
 }
 
 init();
