@@ -162,7 +162,7 @@ option{background:#1e1e1e;}
   <div class="stats">
     <div class="stat-card"><div class="stat-label">Spent Today</div><div class="stat-value warn" id="stat-today">€0.00</div></div>
     <div class="stat-card"><div class="stat-label">Month Total</div><div class="stat-value" id="stat-month">€0.00</div></div>
-    <div class="stat-card"><div class="stat-label">Berlin Saved</div><div class="stat-value green" id="stat-saved">€0.00</div></div>
+    <div class="stat-card"><div class="stat-label">Save (BDT)</div><div class="stat-value green" id="stat-saved">৳0</div></div>
   </div>
   <div class="budget-bar-wrap">
     <div class="budget-bar-label"><span>Monthly Budget Usage</span><span id="bar-pct">0%</span></div>
@@ -199,9 +199,19 @@ option{background:#1e1e1e;}
   <div class="header"><div class="logo">DE<span>Life</span></div><div class="date-chip">Monthly</div></div>
   <div class="spacer"></div>
   <div class="transfer-box">
-    <div class="transfer-label">Transfer to Savings</div>
-    <div class="transfer-amount" id="transfer-amount">€0.00</div>
-    <div class="transfer-sub">Berlin price gap — money saved vs Berlin prices</div>
+    <div class="transfer-label">Total to Transfer This Month</div>
+    <div class="transfer-amount" id="transfer-amount">৳0</div>
+    <div style="display:flex;gap:12px;margin-top:10px;">
+      <div style="flex:1;background:rgba(0,0,0,0.2);border-radius:8px;padding:8px;text-align:center;">
+        <div style="font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">In EUR</div>
+        <div style="font-size:16px;font-weight:700;" id="transfer-eur">€0.00</div>
+      </div>
+      <div style="flex:1;background:rgba(0,0,0,0.2);border-radius:8px;padding:8px;text-align:center;">
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">You Paid</div>
+        <div style="font-size:16px;font-weight:700;" id="transfer-paid">৳0</div>
+      </div>
+    </div>
+    <div class="transfer-sub" style="margin-top:8px;">Transfer the BDT amount above to your savings — don't touch it!</div>
   </div>
   <div class="month-grid">
     <div class="month-card"><div class="month-card-label">Variable Spent</div><div class="month-card-val" id="m-spent">€0.00</div></div>
@@ -536,11 +546,16 @@ function analyzeAndLog() {
 function showResult(r) {
   document.getElementById('res-name').textContent = r.name;
   document.getElementById('res-eur').textContent = '€' + r.eur_actual.toFixed(2);
+  const bdtGap = Math.round(r.eur_gap * EUR_RATE);
   document.getElementById('res-breakdown').innerHTML =
     `<div>৳${r.bdt} ÷ 120 = <span class="hi">€${r.eur_actual.toFixed(2)}</span></div>
      <div class="hi">In Berlin this costs ~€${r.eur_berlin_price.toFixed(2)}</div>
      <div>${r.hint||''}</div>
-     <div style="margin-top:8px">You save: <span class="hi">€${r.eur_gap.toFixed(2)}</span> vs Berlin · ${CAT_ICONS[r.category]||'📦'} ${r.category}</div>`;
+     <div style="margin-top:10px;padding:10px;background:rgba(181,123,255,0.1);border:1px solid rgba(181,123,255,0.3);border-radius:8px;">
+       <div style="font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">💸 Transfer to Savings</div>
+       <div style="font-size:20px;font-weight:700;color:var(--accent)">৳${bdtGap}</div>
+       <div style="font-size:11px;color:var(--muted);margin-top:2px;">You paid ৳${r.bdt} · Berlin costs ৳${Math.round(r.eur_berlin_price * EUR_RATE)} · Save the difference</div>
+     </div>`;
   document.getElementById('result-card').classList.add('visible');
 }
 
@@ -709,7 +724,7 @@ function refreshAll() {
   const monthGap = monthExp.reduce((s,e)=>s+(e.eur_gap||0),0);
   document.getElementById('stat-today').textContent = '€'+todayTotal.toFixed(2);
   document.getElementById('stat-month').textContent = '€'+monthTotal.toFixed(2);
-  document.getElementById('stat-saved').textContent = '€'+monthGap.toFixed(2);
+  document.getElementById('stat-saved').textContent = '৳'+Math.round(monthGap * EUR_RATE).toLocaleString();
   const pct = Math.min((monthTotal/VARIABLE_BUDGET)*100,100);
   const fill = document.getElementById('budget-bar-fill');
   fill.style.width = pct.toFixed(0)+'%';
@@ -720,13 +735,14 @@ function refreshAll() {
 
 function expHTML(e) {
   const d = new Date(e.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+  const bdtGap = Math.round((e.eur_gap||0) * EUR_RATE);
   return `<div class="exp-item">
     <div class="exp-icon">${CAT_ICONS[e.category]||'📦'}</div>
     <div class="exp-info"><div class="exp-name">${e.name}</div><div class="exp-meta">${e.category} · ${d}</div></div>
     <div class="exp-amounts">
       <div class="exp-bdt">৳${e.bdt}</div>
       <div class="exp-eur">€${e.eur_actual.toFixed(2)}</div>
-      <div class="exp-saved">+€${(e.eur_gap||0).toFixed(2)} saved</div>
+      <div class="exp-saved">save ৳${bdtGap}</div>
     </div>
   </div>`;
 }
@@ -754,10 +770,15 @@ function refreshMonthly() {
   const spent = monthExp.reduce((s,e)=>s+e.eur_actual,0);
   const equiv = monthExp.reduce((s,e)=>s+(e.eur_berlin_price||0),0);
   const gap = monthExp.reduce((s,e)=>s+(e.eur_gap||0),0);
+  const totalPaidBDT = monthExp.reduce((s,e)=>s+e.bdt,0);
+  const totalGapBDT = Math.round(gap * EUR_RATE);
+
   document.getElementById('m-spent').textContent = '€'+spent.toFixed(2);
   document.getElementById('m-nl-equiv').textContent = '€'+equiv.toFixed(2);
   document.getElementById('m-gap').textContent = '€'+gap.toFixed(2);
-  document.getElementById('transfer-amount').textContent = '€'+gap.toFixed(2);
+  document.getElementById('transfer-amount').textContent = '৳'+totalGapBDT.toLocaleString();
+  document.getElementById('transfer-eur').textContent = '€'+gap.toFixed(2);
+  document.getElementById('transfer-paid').textContent = '৳'+totalPaidBDT.toLocaleString();
   document.getElementById('variable-budget').textContent = '€'+Math.max(0,VARIABLE_BUDGET-spent).toFixed(2);
   const cats={};
   monthExp.forEach(e=>{cats[e.category]=(cats[e.category]||0)+e.eur_actual;});
